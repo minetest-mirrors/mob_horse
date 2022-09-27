@@ -10,11 +10,10 @@ else
 	if minetest.get_modpath("intllib") then
 		dofile(minetest.get_modpath("intllib") .. "/init.lua")
 		if intllib.make_gettext_pair then
-			gettext, ngettext = intllib.make_gettext_pair() -- new gettext method
+			S = intllib.make_gettext_pair() -- new gettext method
 		else
-			gettext = intllib.Getter() -- old text file method
+			S = intllib.Getter() -- old text file method
 		end
-		S = gettext
 	else -- boilerplate function
 		S = function(str, ...)
 			local args = {...}
@@ -27,11 +26,7 @@ end
 
 
 -- 0.4.17 or 5.0 check
-local y_off = 20
-if minetest.features.object_independent_selectionbox then
-	y_off = 10
-end
-
+local y_off = minetest.features.object_independent_selectionbox and 10 or 20
 
 -- horse shoes (speed, jump, brake/reverse speed, overlay texture)
 local shoes = {
@@ -340,34 +335,32 @@ minetest.register_craft({
 -- crystal horseshoes
 if minetest.get_modpath("ethereal") then
 
-minetest.register_craftitem(":mobs:horseshoe_crystal", {
-	description = S("Crystal HorseShoes (use on horse to apply)"),
-	inventory_image = "mobs_horseshoe_crystal.png"
-})
+	minetest.register_craftitem(":mobs:horseshoe_crystal", {
+		description = S("Crystal HorseShoes (use on horse to apply)"),
+		inventory_image = "mobs_horseshoe_crystal.png"
+	})
 
-minetest.register_craft({
-	output = "mobs:horseshoe_crystal",
-	recipe = {
-		{"", "ethereal:crystal_block", ""},
-		{"ethereal:crystal_ingot", "", "ethereal:crystal_ingot"},
-		{"ethereal:crystal_ingot", "", "ethereal:crystal_ingot"}
-	}
-})
-
+	minetest.register_craft({
+		output = "mobs:horseshoe_crystal",
+		recipe = {
+			{"", "ethereal:crystal_block", ""},
+			{"ethereal:crystal_ingot", "", "ethereal:crystal_ingot"},
+			{"ethereal:crystal_ingot", "", "ethereal:crystal_ingot"}
+		}
+	})
 end
 
 
 -- lucky blocks
 if minetest.get_modpath("lucky_block") then
 
-lucky_block:add_blocks({
-	{"dro", {"mobs:horseshoe_steel"}},
-	{"dro", {"mobs:horseshoe_bronze"}},
-	{"dro", {"mobs:horseshoe_mese"}},
-	{"dro", {"mobs:horseshoe_diamond"}},
-	{"dro", {"mobs:horseshoe_crystal"}}
-})
-
+	lucky_block:add_blocks({
+		{"dro", {"mobs:horseshoe_steel"}},
+		{"dro", {"mobs:horseshoe_bronze"}},
+		{"dro", {"mobs:horseshoe_mese"}},
+		{"dro", {"mobs:horseshoe_diamond"}},
+		{"dro", {"mobs:horseshoe_crystal"}}
+	})
 end
 
 
