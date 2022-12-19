@@ -364,4 +364,4 @@ if minetest.get_modpath("lucky_block") then
 end
 
 
-print("[MOD] Mob Horse loaded")
+print("[MOD] Mobs Redo Horse loaded")
