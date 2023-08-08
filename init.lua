@@ -4,23 +4,14 @@ local MP = minetest.get_modpath(minetest.get_current_modname()) .. "/"
 
 -- Check for translation method
 local S
-if minetest.get_translator ~= nil then
+if minetest.get_translator then
 	S = minetest.get_translator("mob_horse") -- 5.x translation function
-else
-	if minetest.get_modpath("intllib") then
-		dofile(minetest.get_modpath("intllib") .. "/init.lua")
-		if intllib.make_gettext_pair then
-			S = intllib.make_gettext_pair() -- new gettext method
-		else
-			S = intllib.Getter() -- old text file method
-		end
-	else -- boilerplate function
-		S = function(str, ...)
-			local args = {...}
-			return str:gsub("@%d+", function(match)
-				return args[tonumber(match:sub(2))]
-			end)
-		end
+else -- boilerplate function
+	S = function(str, ...)
+		local args = {...}
+		return str:gsub("@%d+", function(match)
+			return args[tonumber(match:sub(2))]
+		end)
 	end
 end
 
@@ -72,7 +63,8 @@ mobs:register_mob("mob_horse:horse", {
 	view_range = 5,
 	follow = {
 		"farming:wheat", "default:apple", "farming:oat",
-		"farming:barley", "farming:corn"},
+		"farming:barley", "farming:corn"
+	},
 	passive = true,
 	hp_min = 12,
 	hp_max = 16,
