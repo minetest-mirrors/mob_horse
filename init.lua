@@ -2,22 +2,8 @@
 -- Load support for intllib.
 local MP = minetest.get_modpath(minetest.get_current_modname()) .. "/"
 
--- Check for translation method
-local S
-if minetest.get_translator then
-	S = minetest.get_translator("mob_horse") -- 5.x translation function
-else -- boilerplate function
-	S = function(str, ...)
-		local args = {...}
-		return str:gsub("@%d+", function(match)
-			return args[tonumber(match:sub(2))]
-		end)
-	end
-end
-
-
--- 0.4.17 or 5.0 check
-local y_off = minetest.features.object_independent_selectionbox and 10 or 20
+-- Translation support
+local S = minetest.get_translator("mob_horse")
 
 -- horse shoes (speed, jump, brake/reverse speed, overlay texture)
 local shoes = {
@@ -86,8 +72,8 @@ mobs:register_mob("mob_horse:horse", {
 			self.max_speed_reverse = 2
 			self.accel = 6
 			self.terrain_type = 3
-			self.driver_attach_at = {x = 0, y = y_off, z = -2}
-			self.driver_eye_offset = {x = 0, y = y_off + 3, z = 0}
+			self.driver_attach_at = {x = 0, y = 10, z = -2}
+			self.driver_eye_offset = {x = 0, y = 10 + 3, z = 0}
 			self.driver_scale = {x = 0.8, y = 0.8} -- shrink driver to fit model
 		end
 
@@ -203,6 +189,7 @@ mobs:register_mob("mob_horse:horse", {
 
 				-- apply horseshoe overlay to current horse texture
 				if overlay then
+
 					self.texture_mods = "^" .. overlay
 
 					if self.saddle then
@@ -356,4 +343,4 @@ if minetest.get_modpath("lucky_block") then
 end
 
 
-print("[MOD] Mobs Redo Horse loaded")
+print("[MOD] Mob Horse loaded")
