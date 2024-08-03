@@ -222,7 +222,15 @@ mobs:register_mob("mob_horse:horse", {
 		if self.saddle and self.owner == player_name then
 			mobs.attach(self, clicker)
 		end
+	end,
+--[[
+	on_sound = function(self, def)
+
+		if def.loudness > 0.2 then -- if loud enough make horse jump with fright
+			self.object:set_velocity({x=0, y=5, z=0})
+		end
 	end
+]]
 })
 
 
