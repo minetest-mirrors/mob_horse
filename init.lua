@@ -211,9 +211,8 @@ mobs:register_mob("mob_horse:horse", {
 	end,
 --[[
 	on_sound = function(self, def)
-		-- loudness ranges from (0.0 = cannot hear, to 1.0 = next to sound)
 		if def.loudness > 0.8 then -- if loud enough startle horse into jumping
-			self.object:set_velocity({x=0, y=5, z=0})
+			self.object:set_velocity({x = 0, y = 5, z = 0})
 		end
 	end
 ]]
@@ -340,4 +339,4 @@ if minetest.get_modpath("lucky_block") then
 	})
 end
 
-print("[MOD] Mob Horse loaded")
+print("[MOD] Mobs Redo Horse loaded")
