@@ -40,7 +40,7 @@ mobs:register_mob("mob_horse:horse", {
 	--runaway = true,
 	fly = false,
 	walk_chance = 60,
-	view_range = 10,
+	view_range = 7,
 	follow = {
 		"farming:wheat", "default:apple", "farming:oat",
 		"farming:barley", "farming:corn"
