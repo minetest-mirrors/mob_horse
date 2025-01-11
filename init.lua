@@ -28,7 +28,8 @@ mobs:register_mob("mob_horse:horse", {
 		stand2_start = 25, stand2_end = 25,
 		stand3_start = 55, stand3_end = 75, stand3_loop = false,
 		walk_start = 75, walk_end = 100,
-		run_start = 75, run_end = 100
+		run_start = 75, run_end = 100,
+		punch_start = 55, punch_end = 75, punch_speed = 35,
 	},
 	textures = {
 		{"mobs_horse.png"}, -- textures by Mjollna
@@ -36,24 +37,27 @@ mobs:register_mob("mob_horse:horse", {
 		{"mobs_horseara.png"}
 	},
 	fear_height = 3,
-	runaway = true,
+	--runaway = true,
 	fly = false,
 	walk_chance = 60,
-	view_range = 5,
+	view_range = 10,
 	follow = {
 		"farming:wheat", "default:apple", "farming:oat",
 		"farming:barley", "farming:corn"
 	},
-	passive = true,
-	hp_min = 12,
-	hp_max = 16,
-	armor = 200,
+	passive = false, attack_type = "dogfight", reach = 2.5, damage = 3,
+	attack_monsters = true,
+	hp_min = 15,
+	hp_max = 23,
+	armor = 100,
 	lava_damage = 5,
+	fire_damage = 4,
 	fall_damage = 1,
 	water_damage = 0,
 	makes_footstep_sound = true,
 	drops = {
-		{name = "mobs:leather", chance = 1, min = 0, max = 2}
+		{name = "mobs:leather", chance = 1, min = 0, max = 2},
+		{name = "mobs:meat_raw", chance = 1, min = 1, max = 2}
 	},
 
 	do_custom = function(self, dtime)
