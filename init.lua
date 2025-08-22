@@ -23,13 +23,13 @@ mobs:register_mob("mob_horse:horse", {
 	mesh = "mobs_horse.x",
 	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1.25, 0.4},
 	animation = {
-		speed_normal = 15, speed_run = 30,
-		stand_start = 25, stand_end = 50, -- 75
-		stand2_start = 25, stand2_end = 25,
-		stand3_start = 55, stand3_end = 75, stand3_loop = false,
+		speed_normal = 15,
+		stand_start = 25, stand_end = 25, -- stand still
+		stand2_start = 25, stand2_end = 50, stand2_loop = false, -- head to side
+--		stand3_start = 55, stand3_end = 75, stand3_loop = false, -- rear up
 		walk_start = 75, walk_end = 100,
-		run_start = 75, run_end = 100,
-		punch_start = 55, punch_end = 75, punch_speed = 35,
+		run_start = 75, run_end = 100, speed_run = 30,
+		punch_start = 55, punch_end = 75, punch_speed = 35
 	},
 	textures = {
 		{"mobs_horse.png"}, -- textures by Mjollna
