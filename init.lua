@@ -137,6 +137,8 @@ mobs:register_mob("mob_horse:horse", {
 
 				mobs.detach(clicker, {x = 1, y = 0, z = 1})
 
+				self:set_animation("stand")
+
 				return
 			end
 
