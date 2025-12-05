@@ -246,9 +246,9 @@ else
 	})
 end
 
--- spawn egg
+-- spawn egg (true at end means horse can be placed in protected areas)
 
-mobs:register_egg("mob_horse:horse", S("Horse"), "wool_brown.png", 1)
+mobs:register_egg("mob_horse:horse", S("Horse"), "wool_brown.png", 1, nil, true)
 
 -- steel horseshoes
 
