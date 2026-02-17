@@ -56,6 +56,11 @@ mobs:register_mob("mob_horse:horse", {
 	fall_damage = 1,
 	water_damage = 0,
 	makes_footstep_sound = true,
+	sounds = {
+		random = "mob_horse",
+		death = "mob_horse_whinny",
+		attack = "mob_horse_whinny"
+	},
 	drops = {
 		{name = "mobs:leather", chance = 1, min = 0, max = 2},
 		{name = "mobs:meat_raw", chance = 1, min = 1, max = 2}
