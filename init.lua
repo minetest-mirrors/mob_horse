@@ -26,10 +26,9 @@ mobs:register_mob("mob_horse:horse", {
 		speed_normal = 15,
 		stand_start = 25, stand_end = 25, -- stand still
 		stand2_start = 25, stand2_end = 50, stand2_loop = false, -- head to side
---		stand3_start = 55, stand3_end = 75, stand3_loop = false, -- rear up
 		walk_start = 75, walk_end = 100,
 		run_start = 75, run_end = 100, speed_run = 30,
-		punch_start = 55, punch_end = 75, punch_speed = 35
+		punch_start = 55, punch_end = 75, punch_speed = 35 -- rear up
 	},
 	textures = {
 		{"mobs_horse.png"}, -- textures by Mjollna
@@ -66,18 +65,29 @@ mobs:register_mob("mob_horse:horse", {
 		{name = "mobs:meat_raw", chance = 1, min = 1, max = 2}
 	},
 
+	do_mount_action = function(self, dtime) -- holding sneak and LMB while riding horse
+
+		-- only allowed to continue after 5 seconds
+		self.neigh_timer = (self.neigh_timer or os.time())
+		if (os.time() - self.neigh_timer) < 5 then return end
+
+		core.sound_play("mob_horse_whinny", {pos = self.object:get_pos()}, true)
+
+		self.neigh_timer = os.time()
+	end,
+
 	do_custom = function(self, dtime)
 
-		-- set needed values if not already present
-		if not self.v2 then
-			self.v2 = 0
+		-- set required values if not already present
+		if not self.max_speed_forward then
+
 			self.max_speed_forward = 6
 			self.max_speed_reverse = 2
 			self.accel = 6
-			self.terrain_type = 3
 			self.driver_attach_at = {x = 0, y = 10, z = -2}
 			self.driver_eye_offset = {x = 0, y = 10 + 3, z = 0}
 			self.driver_scale = {x = 0.8, y = 0.8} -- shrink driver to fit model
+--			self.alt_turn = true -- uses left and right keys to turn horse instead
 		end
 
 		-- if driver present allow control of horse
@@ -87,8 +97,6 @@ mobs:register_mob("mob_horse:horse", {
 
 			return false -- skip rest of mob functions
 		end
-
-		return true
 	end,
 
 	on_die = function(self, pos)
