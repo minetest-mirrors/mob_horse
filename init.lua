@@ -117,14 +117,6 @@ mobs:register_mob("mob_horse:horse", {
 		end
 	end,
 
-	do_punch = function(self, hitter)
-
-		-- don't cut the branch you're... ah, that's not about that
-		if hitter ~= self.driver then
-			return true
-		end
-	end,
-
 	on_rightclick = function(self, clicker)
 
 		-- make sure player is clicking
