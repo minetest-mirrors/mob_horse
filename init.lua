@@ -27,7 +27,7 @@ mobs:register_mob("mob_horse:horse", {
 		stand_start = 25, stand_end = 25, -- stand still
 		stand2_start = 25, stand2_end = 50, stand2_loop = false, -- head to side
 		walk_start = 75, walk_end = 100,
-		run_start = 75, run_end = 100, speed_run = 30,
+		run_start = 75, run_end = 100, run_speed = 45,
 		punch_start = 55, punch_end = 75, punch_speed = 35 -- rear up
 	},
 	textures = {
