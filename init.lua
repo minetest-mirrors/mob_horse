@@ -68,7 +68,7 @@ mobs:register_mob("mob_horse:horse", {
 	do_mount_action = function(self, dtime) -- holding sneak and LMB while riding horse
 
 		-- only allowed to continue after 5 seconds
-		self.neigh_timer = (self.neigh_timer or os.time())
+		self.neigh_timer = (self.neigh_timer or 0)
 		if (os.time() - self.neigh_timer) < 5 then return end
 
 		core.sound_play("mob_horse_whinny", {pos = self.object:get_pos()}, true)
