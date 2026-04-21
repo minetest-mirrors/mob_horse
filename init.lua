@@ -17,6 +17,7 @@ local shoes = {
 -- rideable horse
 
 mobs:register_mob("mob_horse:horse", {
+	description = S("Horse"),
 	type = "animal",
 	visual = "mesh",
 	visual_size = {x = 1.20, y = 1.20},
