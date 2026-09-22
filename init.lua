@@ -1,18 +1,58 @@
 
 -- translation and get mod path
 
-local S = minetest.get_translator("mob_horse")
-local MP = minetest.get_modpath(minetest.get_current_modname()) .. "/"
+local S = core.get_translator("mob_horse")
+local MP = core.get_modpath(core.get_current_modname()) .. "/"
 
 -- horse shoes (speed, jump, brake/reverse speed, overlay texture)
 
 local shoes = {
-	["mobs:horseshoe_steel"] = {7, 4, 2, "mobs_horseshoe_steelo.png"},
-	["mobs:horseshoe_bronze"] = {7, 4, 4, "mobs_horseshoe_bronzeo.png"},
-	["mobs:horseshoe_mese"] = {9, 5, 8, "mobs_horseshoe_meseo.png"},
-	["mobs:horseshoe_diamond"] = {10, 6, 6, "mobs_horseshoe_diamondo.png"},
-	["mobs:horseshoe_crystal"] = {11, 6, 9, "mobs_horseshoe_crystalo.png"}
+	["mobs:horseshoe_steel"] = {
+		speed = 7, jump = 4, reverse = 2, overlay = "mobs_horseshoe_steelo.png"},
+	["mobs:horseshoe_bronze"] = {
+		speed = 7, jump = 4, reverse = 4, overlay = "mobs_horseshoe_bronzeo.png"},
+	["mobs:horseshoe_mese"] = {
+		speed = 9, jump = 5, reverse = 8, overlay = "mobs_horseshoe_meseo.png"},
+	["mobs:horseshoe_diamond"] = {
+		speed = 10, jump = 6, reverse = 6, overlay = "mobs_horseshoe_diamondo.png"},
+	["mobs:horseshoe_crystal"] = {
+		speed = 11, jump = 6, reverse = 9, overlay = "mobs_horseshoe_crystalo.png"}
 }
+
+-- helper function for horse texture overlay
+
+local function update_horse_texture(self)
+
+	local texture_mods = ""
+
+	if self.shoed then
+
+		local shoe = shoes[self.shoed]
+
+		if shoe and shoe.overlay then
+			texture_mods = "^" .. shoe.overlay
+		end
+	end
+
+	if self.saddle then
+		texture_mods = texture_mods .. "^mobs_saddle_overlay.png"
+	end
+
+	self.texture_mods = texture_mods
+
+	self.object:set_texture_mod(texture_mods)
+end
+
+-- drop item
+
+local function drop_item(pos, item)
+
+	local obj = core.add_item(pos, item)
+
+	if obj then
+		obj:set_velocity({x = math.random() - 0.5, y = 5, z = math.random() - 0.5})
+	end
+end
 
 -- rideable horse
 
@@ -45,6 +85,7 @@ mobs:register_mob("mob_horse:horse", {
 		"farming:wheat", "default:apple", "farming:oat",
 		"farming:barley", "farming:corn"
 	},
+	pushable = true,
 	passive = false, attack_type = "dogfight", reach = 2.5, damage = 3,
 	attack_chance = 95,
 	attack_monsters = true,
@@ -68,25 +109,26 @@ mobs:register_mob("mob_horse:horse", {
 
 	do_mount_action = function(self, dtime) -- holding sneak and LMB while riding horse
 
+		local now = os.time()
+
 		-- only allowed to continue after 5 seconds
 		self.neigh_timer = (self.neigh_timer or 0)
-		if (os.time() - self.neigh_timer) < 5 then return end
+		if (now - self.neigh_timer) < 5 then return end
+		self.neigh_timer = now
 
 		core.sound_play("mob_horse_whinny", {pos = self.object:get_pos()}, true)
-
-		self.neigh_timer = os.time()
 	end,
 
 	do_custom = function(self, dtime)
 
-		-- set required values if not already present
+		-- set required riding values if not already present
 		if not self.max_speed_forward then
 
 			self.max_speed_forward = 6
 			self.max_speed_reverse = 2
 			self.accel = 6
 			self.driver_attach_at = {x = 0, y = 10, z = -2}
-			self.driver_eye_offset = {x = 0, y = 10 + 3, z = 0}
+			self.driver_eye_offset = {x = 0, y = 13, z = 0}
 			self.driver_scale = {x = 0.8, y = 0.8} -- shrink driver to fit model
 --			self.alt_turn = true -- uses left and right keys to turn horse instead
 		end
@@ -109,12 +151,12 @@ mobs:register_mob("mob_horse:horse", {
 
 		-- drop saddle if found
 		if self.saddle then
-			minetest.add_item(pos, "mobs:saddle")
+			drop_item(pos, "mobs:saddle")
 		end
 
 		-- drop any horseshoes added
 		if self.shoed then
-			minetest.add_item(pos, self.shoed)
+			drop_item(pos, self.shoed)
 		end
 	end,
 
@@ -149,9 +191,8 @@ mobs:register_mob("mob_horse:horse", {
 			end
 
 			-- attach saddle to horse
-			if not self.driver and not self.child
-			and clicker:get_wielded_item():get_name() == "mobs:saddle"
-			and not self.saddle then
+			if not self.driver and not self.child and not self.saddle
+			and tool:get_name() == "mobs:saddle" then
 
 				self.saddle = true
 				self.order = "stand"
@@ -160,51 +201,34 @@ mobs:register_mob("mob_horse:horse", {
 				-- take saddle from inventory
 				inv:remove_item("main", "mobs:saddle")
 
-				self.texture_mods = self.texture_mods .. "^mobs_saddle_overlay.png"
-
-				self.object:set_texture_mod(self.texture_mods)
+				update_horse_texture(self)
 
 				return
 			end
 
-			-- apply horseshoes
-			if item:find("mobs:horseshoe") then
+			local shoe = shoes[item]
+
+			if shoe then -- apply horseshoes
 
 				-- drop any existing shoes
 				if self.shoed then
-					minetest.add_item(self.object:get_pos(), self.shoed)
+					drop_item(self.object:get_pos(), self.shoed)
 				end
 
-				local speed = shoes[item][1]
-				local jump = shoes[item][2]
-				local reverse = shoes[item][3]
-				local overlay = shoes[item][4]
-
-				self.max_speed_forward = speed
-				self.jump_height = jump
-				self.max_speed_reverse = reverse
-				self.accel = speed
+				self.max_speed_forward = shoe.speed
+				self.jump_height = shoe.jump
+				self.max_speed_reverse = shoe.reverse
+				self.accel = shoe.speed
 				self.shoed = item
 
-				-- apply horseshoe overlay to current horse texture
-				if overlay then
-
-					self.texture_mods = "^" .. overlay
-
-					if self.saddle then
-						self.texture_mods = self.texture_mods
-							.. "^mobs_saddle_overlay.png"
-					end
-
-					self.object:set_texture_mod(self.texture_mods)
-				end
+				update_horse_texture(self)
 
 				-- show horse speed and jump stats with shoes fitted
-				minetest.chat_send_player(player_name,
+				core.chat_send_player(player_name,
 						S("Horse shoes fitted -")
-						.. S(" speed: ") .. speed
-						.. S(" , jump height: ") .. jump
-						.. S(" , stop speed: ") .. reverse)
+						.. S(" speed: ") .. shoe.speed
+						.. S(" , jump height: ") .. shoe.jump
+						.. S(" , stop speed: ") .. shoe.reverse)
 
 				tool:take_item()
 
@@ -258,12 +282,12 @@ mobs:register_egg("mob_horse:horse", S("Horse"), "wool_brown.png", 1, nil, true)
 
 -- steel horseshoes
 
-minetest.register_craftitem(":mobs:horseshoe_steel", {
+core.register_craftitem(":mobs:horseshoe_steel", {
 	description = S("Steel HorseShoes (use on horse to apply)"),
 	inventory_image = "mobs_horseshoe_steel.png",
 })
 
-minetest.register_craft({
+core.register_craft({
 	output = "mobs:horseshoe_steel",
 	recipe = {
 		{"", "default:steelblock", ""},
@@ -274,12 +298,12 @@ minetest.register_craft({
 
 -- bronze horseshoes
 
-minetest.register_craftitem(":mobs:horseshoe_bronze", {
+core.register_craftitem(":mobs:horseshoe_bronze", {
 	description = S("Bronze HorseShoes (use on horse to apply)"),
 	inventory_image = "mobs_horseshoe_bronze.png"
 })
 
-minetest.register_craft({
+core.register_craft({
 	output = "mobs:horseshoe_bronze",
 	recipe = {
 		{"", "default:bronzeblock", ""},
@@ -290,12 +314,12 @@ minetest.register_craft({
 
 -- mese horseshoes
 
-minetest.register_craftitem(":mobs:horseshoe_mese", {
+core.register_craftitem(":mobs:horseshoe_mese", {
 	description = S("Mese HorseShoes (use on horse to apply)"),
 	inventory_image = "mobs_horseshoe_mese.png"
 })
 
-minetest.register_craft({
+core.register_craft({
 	output = "mobs:horseshoe_mese",
 	recipe = {
 		{"", "default:mese", ""},
@@ -306,12 +330,12 @@ minetest.register_craft({
 
 -- diamond horseshoes
 
-minetest.register_craftitem(":mobs:horseshoe_diamond", {
+core.register_craftitem(":mobs:horseshoe_diamond", {
 	description = S("Diamond HorseShoes (use on horse to apply)"),
 	inventory_image = "mobs_horseshoe_diamond.png"
 })
 
-minetest.register_craft({
+core.register_craft({
 	output = "mobs:horseshoe_diamond",
 	recipe = {
 		{"", "default:diamondblock", ""},
@@ -322,14 +346,14 @@ minetest.register_craft({
 
 -- crystal horseshoes
 
-if minetest.get_modpath("ethereal") then
+if core.get_modpath("ethereal") then
 
-	minetest.register_craftitem(":mobs:horseshoe_crystal", {
+	core.register_craftitem(":mobs:horseshoe_crystal", {
 		description = S("Crystal HorseShoes (use on horse to apply)"),
 		inventory_image = "mobs_horseshoe_crystal.png"
 	})
 
-	minetest.register_craft({
+	core.register_craft({
 		output = "mobs:horseshoe_crystal",
 		recipe = {
 			{"", "ethereal:crystal_block", ""},
@@ -341,7 +365,7 @@ end
 
 -- lucky blocks
 
-if minetest.get_modpath("lucky_block") then
+if core.get_modpath("lucky_block") then
 
 	lucky_block:add_blocks({
 		{"dro", {"mobs:horseshoe_steel"}},
