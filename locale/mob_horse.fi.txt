@@ -1,0 +1,11 @@
+# textdomain:mob_horse
+ , jump height: = , hyppykorkeus: 
+ , stop speed: = , pysähtymisnopeus: 
+ speed: = nopeus: 
+Bronze HorseShoes (use on horse to apply)=Pronssiset hevosenkengät (käytä hevoseen)
+Diamond HorseShoes (use on horse to apply)=Timanttiset hevosenkengät (käytä hevoseen)
+Horse=Hevonen
+Horse shoes fitted -=Hevonen kengitetty -
+Mese HorseShoes (use on horse to apply)=Mese-hevosenkengät (käytä hevoseen)
+Steel HorseShoes (use on horse to apply)=Teräksiset hevosenkengät (käytä hevoseen)
+Crystal HorseShoes (use on horse to apply)=Kristalliset hevosenkengät (käytä hevoseen)
