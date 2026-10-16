@@ -100,6 +100,7 @@ mobs:register_mob("mob_horse:horse", {
 	sounds = {
 		random = "mob_horse",
 		death = "mob_horse_whinny",
+		damage = "mob_horse_whinny",
 		attack = "mob_horse_whinny"
 	},
 	drops = {
