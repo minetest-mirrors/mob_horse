@@ -107,6 +107,10 @@ mobs:register_mob("mob_horse:horse", {
 		{name = "mobs:leather", chance = 1, min = 0, max = 2},
 		{name = "mobs:meat_raw", chance = 1, min = 1, max = 2}
 	},
+	replace_rate = 10,
+	replace_what = {
+		{ {"group:grass", "group:dry_grass"}, "air", 0},
+	},
 
 	do_mount_action = function(self, dtime) -- holding sneak and LMB while riding horse
 
